@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/con_pass_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login"
@@ -30,7 +31,7 @@
         tools:backgroundTint="#FFFFFF" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/user_name_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="96dp"
@@ -42,6 +43,7 @@
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
         android:paddingRight="10dp"
+
         android:paddingBottom="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -49,7 +51,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPassword"
+        android:id="@+id/confirm_pass_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="240dp"
@@ -68,10 +70,10 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextPassword3"
+        android:id="@+id/password_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="172dp"
+        android:layout_marginTop="168dp"
         android:autoText="false"
         android:background="@drawable/input_bg"
         android:drawableLeft="@drawable/ic_action_pass"
@@ -82,13 +84,14 @@
         android:paddingTop="10dp"
         android:paddingRight="10dp"
         android:paddingBottom="10dp"
+        
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextEmailAddress"
+        android:id="@+id/email_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="312dp"
@@ -107,7 +110,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextPhone"
+        android:id="@+id/phone_signup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="400dp"
@@ -126,7 +129,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/register_signup"
         android:layout_width="138dp"
         android:layout_height="51dp"
         android:layout_marginTop="500dp"
@@ -142,5 +145,26 @@
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/com_pass_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/confirm_pass_signup"
+        app:layout_constraintEnd_toEndOf="@+id/confirm_pass_signup"
+        app:layout_constraintHorizontal_bias="0.919"
+        app:layout_constraintStart_toStartOf="@+id/confirm_pass_signup"
+        app:srcCompat="@drawable/view" />
+
+    <ImageView
+        android:id="@+id/pass_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="176dp"
+        app:layout_constraintBottom_toBottomOf="@+id/password_signup"
+        app:layout_constraintStart_toStartOf="@+id/password_signup"
+        app:layout_constraintTop_toTopOf="@+id/password_signup"
+        app:srcCompat="@drawable/view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
