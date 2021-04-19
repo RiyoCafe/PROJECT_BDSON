@@ -18,7 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/newlogo" />
+        app:srcCompat="@drawable/newlogo3" />
 
     <EditText
         android:id="@+id/editTextTextPersonName2"
@@ -27,9 +27,11 @@
         android:layout_marginTop="228dp"
         android:drawableLeft="@drawable/ic_action_user"
         android:ems="10"
-        android:hint="Name"
+        android:hint="Username"
+        android:fontFamily="sans-serif-condensed"
+        android:textColorHint="#5a2f74"
         android:inputType="textPersonName"
-        android:textColor="#FFFFFF"
+        android:textColor="#5a2f74"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.429"
@@ -44,8 +46,10 @@
         android:drawableLeft="@drawable/ic_action_pass"
         android:ems="10"
         android:hint="Password"
+        android:fontFamily="sans-serif-condensed"
+        android:textColorHint="#5a2f74"
         android:inputType="textPassword"
-        android:textColor="#000000"
+        android:textColor="#5a2f74"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.435"
@@ -62,9 +66,9 @@
         android:layout_marginBottom="16dp"
         android:background="#000000"
 
-        android:backgroundTint="#DBA0F1"
+        android:backgroundTint="#5a2f74"
         android:text="Login"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -81,10 +85,10 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
         android:background="#7FFFD4"
-        android:backgroundTint="#E1ABF6"
+        android:backgroundTint="#5a2f74"
 
         android:text="Sign Up"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -98,7 +102,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginTop="528dp"
-        android:text="Forget Password?"
+        android:text="Forgot Password?"
+        android:textColor="#5a2f74"
+        android:fontFamily="sans-serif-black"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -109,6 +116,9 @@
         android:layout_marginStart="224dp"
         android:layout_marginTop="540dp"
         android:text="Remember Me"
+        android:textColor="#5a2f74"
+        android:fontFamily="sans-serif-black"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
