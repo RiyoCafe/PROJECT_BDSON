@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         UsersRef=FirebaseDatabase.getInstance().getReference().child("Users");
         Paper.init(this);
 
-
         findAllViewId();
 
         String UserEmailKey = Paper.book().read(Prevalent.UserEmailKey);
