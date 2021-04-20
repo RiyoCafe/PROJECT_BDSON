@@ -35,8 +35,8 @@
 
     <TextView
         android:id="@+id/status_profile"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="383dp"
+        android:layout_height="38dp"
         android:text="hey i'm using Coding Cafe chat App."
         android:textAlignment="center"
         android:textAllCaps="false"
@@ -44,15 +44,15 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.572" />
+        app:layout_constraintVertical_bias="0.567" />
 
     <Button
         android:id="@+id/send_msg_req_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="186dp"
+        android:layout_height="51dp"
         android:text="Send Message"
         android:textAllCaps="false"
         android:textColor="@android:color/background_light"
@@ -60,10 +60,10 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.477"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.67" />
+        app:layout_constraintVertical_bias="0.674" />
 
     <Button
         android:id="@+id/decline_msg_req_btn"

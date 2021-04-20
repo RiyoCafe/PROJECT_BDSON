@@ -9,11 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Watcher">
-        <activity android:name=".FindFriendsActivity"></activity>
+        <activity android:name=".FindFriendsActivity" />
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".FinalHomeActivity2" >
-
-        </activity>
+        <activity android:name=".FinalHomeActivity2"></activity>
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>
@@ -25,9 +23,7 @@
         <activity
             android:name=".SignUp"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity" >
-
-        </activity>
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>
