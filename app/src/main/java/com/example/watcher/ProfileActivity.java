@@ -210,7 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
                                             {
                                                 button1.setEnabled(true);
                                                 Current_State = "new";
-                                                button1.setText("Send Message");
+                                                button1.setText("Send friend request ");
 
                                                 button2.setVisibility(View.INVISIBLE);
                                                 button2.setEnabled(false);

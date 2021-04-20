@@ -184,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private void findAllViewId() {
 
         editText1=findViewById(R.id.email_login);

@@ -47,6 +47,11 @@ public class FindFriendsActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
