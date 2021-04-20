@@ -12,8 +12,8 @@ import android.widget.TextView;
 public class SplashScreen extends AppCompatActivity {
 
     Animation toanim,bottomanim;
-    ImageView imageView4;
-    TextView textView3;
+    ImageView imageView;
+    TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,10 +22,10 @@ public class SplashScreen extends AppCompatActivity {
 
         toanim= AnimationUtils.loadAnimation(this,R.anim.top_animation);
         bottomanim=AnimationUtils.loadAnimation(this,R.anim.bottom_animation);
-        imageView4=findViewById(R.id.imageView);
-        textView3=findViewById(R.id.textView);
-        imageView4.setAnimation(toanim);
-        textView3.setAnimation(bottomanim);
+        imageView=findViewById(R.id.imageView4);
+        textView=findViewById(R.id.textView3);
+        imageView.setAnimation(toanim);
+        textView.setAnimation(bottomanim);
 
 
 
