@@ -1,5 +1,6 @@
 package com.example.watcher;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +27,9 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private View view;
+    private Button button;
+    FirebaseAuth mAuth;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -59,6 +66,17 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        view= inflater.inflate(R.layout.fragment_profile, container, false);
+        button=view.findViewById(R.id.signout);
+        mAuth=FirebaseAuth.getInstance();
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAuth.signOut();
+                Intent intent=new Intent(getContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        return view;
     }
 }

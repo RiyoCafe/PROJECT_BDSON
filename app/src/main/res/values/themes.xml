@@ -17,9 +17,13 @@
     <style name="Theme.Watcher.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:textColorPrimary">#050505</item>
     </style>
 
-    <style name="Theme.Watcher.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Watcher.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
+        <item name="android:textColorPrimary">#050505</item>
+        <item name="actionMenuTextColor">@android:color/holo_green_light</item>
+    </style>
 
     <style name="Theme.Watcher.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

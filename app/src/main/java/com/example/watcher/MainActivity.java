@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser != null)
         {
-            Intent intent=new Intent(MainActivity.this,HomePageActivity.class);
+            Intent intent=new Intent(MainActivity.this,FinalHomeActivity2.class);
             startActivity(intent);
         }
 
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (task.isSuccessful())
                                     {
                                         progressDialog.dismiss();
-                                        Intent intent=new Intent(MainActivity.this, HomePageActivity.class);
+                                        Intent intent=new Intent(MainActivity.this, FinalHomeActivity2.class);
                                         startActivity(intent);
                                         Toast.makeText(MainActivity.this,"You have successfully logged in",Toast.LENGTH_SHORT).show();
                                     }
