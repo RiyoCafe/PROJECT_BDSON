@@ -14,6 +14,9 @@
         <activity android:name=".FinalHomeActivity2" >
 
         </activity>
+        <activity android:name=".MessageActivity" >
+
+        </activity>
         <activity android:name=".ResetPasswordActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>

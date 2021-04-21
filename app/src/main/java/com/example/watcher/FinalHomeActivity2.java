@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TableLayout;
@@ -59,10 +62,15 @@ public class FinalHomeActivity2 extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
+
         getMenuInflater().inflate(R.menu.options_menu, menu);
-        menu.findItem(R.id.find_friends_menu).setTitle(Html.fromHtml("<font color='#FF000000'>Settings</font>"));
-        return true;
+        for(int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString spanString = new SpannableString(menu.getItem(i).getTitle().toString());
+            spanString.setSpan(new ForegroundColorSpan(Color.BLACK), 0,     spanString.length(), 0); //fix the color to white
+            item.setTitle(spanString);
+        }
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override

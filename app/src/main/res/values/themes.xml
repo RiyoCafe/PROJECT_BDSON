@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.Watcher" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
@@ -23,6 +23,8 @@
     <style name="Theme.Watcher.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
         <item name="android:textColorPrimary">#050505</item>
         <item name="actionMenuTextColor">@android:color/holo_green_light</item>
+
+
     </style>
 
     <style name="Theme.Watcher.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
