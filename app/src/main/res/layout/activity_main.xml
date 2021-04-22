@@ -95,26 +95,13 @@
         app:layout_constraintVertical_bias="0.017" />
 
     <CheckBox
-        android:id="@+id/forget_password"
+        android:id="@+id/save_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="48dp"
         android:layout_marginTop="528dp"
         android:fontFamily="sans-serif-black"
         android:text="Remember Me"
-        android:textColor="#5a2f74"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/remember_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="224dp"
-        android:layout_marginTop="540dp"
-        android:fontFamily="sans-serif-black"
-        android:text="Forget password?"
         android:textColor="#5a2f74"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,5 +118,18 @@
         app:layout_constraintTop_toTopOf="@+id/password_login"
         app:layout_constraintVertical_bias="0.434"
         app:srcCompat="@drawable/view" />
+
+    <TextView
+        android:id="@+id/forgetpasstv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="548dp"
+        android:text="Forget Password?"
+        android:textColor="#5a2f74"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.824"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
