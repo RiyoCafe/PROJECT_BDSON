@@ -5,61 +5,48 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private View view;
     private Button button;
     FirebaseAuth mAuth;
-
+    private CircleImageView circleImageView;
+    private TextView textView1,textView2,textView3,textView4,textView5;
+    private DatabaseReference RootRef;
+    private String currentUserID;
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static ProfileFragment newInstance(String param1, String param2) {
         ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -69,6 +56,18 @@ public class ProfileFragment extends Fragment {
         view= inflater.inflate(R.layout.fragment_profile, container, false);
         button=view.findViewById(R.id.signout);
         mAuth=FirebaseAuth.getInstance();
+        currentUserID=mAuth.getCurrentUser().getUid();
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        circleImageView=view.findViewById(R.id.profile_image_frament);
+        textView1=view.findViewById(R.id.username_profile_fragment);
+        textView2=view.findViewById(R.id.email_profile_fragment);
+        textView3=view.findViewById(R.id.phone_profile_fragment);
+        textView4=view.findViewById(R.id.address_profile_fragment);
+        textView5=view.findViewById(R.id.blood_group_profile_fragment);
+
+        retrieveUserInfo();
+
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,5 +77,52 @@ public class ProfileFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    private void retrieveUserInfo() {
+
+        RootRef.child("Users").child(currentUserID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot)
+                    {
+                        if(dataSnapshot.exists()){
+
+                            if(dataSnapshot.hasChild("username")){
+                                textView1.setText(dataSnapshot.child("username").getValue().toString());
+                                // Intent intent = new Intent();
+                                // intent.putExtra("notifiername",dataSnapshot.child("username").getValue().toString());
+
+                                // Log.d("is setting",dataSnapshot.child("username").getValue().toString());
+                                //  Prevalent.UserName=dataSnapshot.child("username").getValue().toString();
+                            }
+                            if(dataSnapshot.hasChild("email")){
+                                textView2.setText(dataSnapshot.child("email").getValue().toString());
+                                //Log.d("is setting",dataSnapshot.child("email").getValue().toString());
+                            }
+                            if(dataSnapshot.hasChild("phone")){
+                                textView3.setText(dataSnapshot.child("phone").getValue().toString());
+                                // Log.d("is setting",dataSnapshot.child("phone").getValue().toString());
+                            }
+                            if(dataSnapshot.hasChild("address")){
+                                textView4.setText(dataSnapshot.child("address").getValue().toString());
+                                // Log.d("is setting",dataSnapshot.child("address").getValue().toString());
+                            }
+                            if(dataSnapshot.hasChild("BloodGroup")){
+                                textView5.setText(dataSnapshot.child("BloodGroup").getValue().toString());
+                                //Log.d("is setting",dataSnapshot.child("BloodGroup").getValue().toString());
+                            }
+                            if(dataSnapshot.hasChild("image")){
+                                Picasso.get().load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
+                                Log.d("image came?",dataSnapshot.child("image").getValue().toString());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 }

@@ -8,11 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,15 +25,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatFragment extends Fragment {
     private View PrivateChatsView;
     private RecyclerView chatsList;
-
-    private DatabaseReference ChatsRef, UsersRef;
+    private DatabaseReference ChatsRef, UsersRef,typeRef;
     private FirebaseAuth mAuth;
-    private String currentUserID="";
+    private String currentUserID="",retStatus;
     public ChatFragment() {
         // Required empty public constructor
     }
@@ -55,14 +59,14 @@ public class ChatFragment extends Fragment {
         currentUserID = mAuth.getCurrentUser().getUid();
         ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
-
+        typeRef = FirebaseDatabase.getInstance().getReference().child("User Type");
 
         chatsList = (RecyclerView) PrivateChatsView.findViewById(R.id.chat_fragment_recycler);
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
 
 
         return PrivateChatsView;
-       // return inflater.inflate(R.layout.fragment_chat, container, false);
+        // return inflater.inflate(R.layout.fragment_chat, container, false);
     }
 
     @Override
@@ -82,6 +86,7 @@ public class ChatFragment extends Fragment {
                         final String usersIDs = getRef(position).getKey();
                         final String[] retImage = {"default_image"};
 
+
                         UsersRef.child(usersIDs).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot)
@@ -91,11 +96,30 @@ public class ChatFragment extends Fragment {
                                     if (dataSnapshot.hasChild("image"))
                                     {
                                         retImage[0] = dataSnapshot.child("image").getValue().toString();
-                                       // Picasso.get().load(retImage[0]).into(holder.profileImage);
+                                        //Glide.with(getContext()).load(retImage[0]).into(holder.profileImage);
+
+                                        Picasso.get().load(retImage[0]).into(holder.profileImage);
                                     }
 
                                     final String retName = dataSnapshot.child("username").getValue().toString();
-                                   // final String retStatus = dataSnapshot.child("status").getValue().toString();
+                                    //notifier_name=dataSnapshot.child("username").getValue().toString();
+                                    // Prevalent.UserName= dataSnapshot.child("username").getValue().toString();
+                                    // final String retStatus = dataSnapshot.child("Type").getValue().toString();
+                                    typeRef.child(currentUserID).child(usersIDs).addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if(snapshot.hasChild("Type")){
+                                                retStatus = snapshot.child("Type").getValue().toString();
+                                                Log.d("is it clear",retStatus);
+                                                holder.userStatus.setText(retStatus);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
 
                                     holder.userName.setText(retName);
 

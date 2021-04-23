@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Edit your profle here"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp"
+        android:layout_margin="10dp"
+        android:id="@+id/edit_profile_setting_text"
+        android:layout_height="wrap_content"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="200dp"
+
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:src="@drawable/bg"
+        android:layout_below="@+id/edit_profile_setting_text"
+        android:id="@+id/profile_image_setting"
+        android:layout_height="150dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/username_profile_setting"
+        android:layout_below="@+id/profile_image_setting"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/email_profile_setting"
+        android:layout_below="@+id/username_profile_setting"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:hint="enail"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/phone_profile_setting"
+        android:layout_below="@+id/email_profile_setting"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:hint="phone"
+        android:textColor="@color/black"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/address_profile_setting"
+        android:layout_below="@+id/phone_profile_setting"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="10dp"
+        android:hint="address"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:id="@+id/blood_group_profile_setting"
+        android:layout_below="@+id/address_profile_setting"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:hint="Blood group"
+        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:id="@+id/save_profile_editing_setting"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp"
+        android:text="Save"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

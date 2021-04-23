@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -140,6 +142,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
+                    SharedPreferences pref =getSharedPreferences("nameofemail", Context.MODE_PRIVATE);
+                    if (pref.contains(email)) {
+                        SharedPreferences pref2 =getSharedPreferences("nameofuser", Context.MODE_PRIVATE); // 0 - for private mode
+                        SharedPreferences.Editor editor2 = pref2.edit();
+                        editor2.putString("careename", pref.getString(email,"not found"));
+                        Log.d("login user? ", pref.getString(email,"not found"));
+                        //editor.putString(e);
+                        editor2.commit();
+                    }
 
 
                     if(checkBox.isChecked())

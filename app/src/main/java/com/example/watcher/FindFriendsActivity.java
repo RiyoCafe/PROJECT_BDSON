@@ -3,14 +3,18 @@ package com.example.watcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -31,7 +35,10 @@ public class FindFriendsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_friends);
-
+        Window window = this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.bar_color));
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
 
@@ -67,18 +74,19 @@ public class FindFriendsActivity extends AppCompatActivity {
                     protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, final int position, @NonNull Contacts model)
                     {
                         holder.userName.setText(model.getusername());
-                        holder.userStatus.setText(model.getType());
-                        Picasso.get().load(R.drawable.profile_user).placeholder(R.drawable.profile_user).into(holder.profileImage);
+                        //holder.userStatus.setText(model.getType());
+                        Picasso.get().load(model.getImage()).placeholder(R.drawable.profile_user).into(holder.profileImage);
 
 
                         holder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view)
                             {
-                                String visit_user_id = getRef(position).getKey();
+                                String visit_user_id = model.getUid();
 
                                 Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
                                 profileIntent.putExtra("visit_user_id", visit_user_id);
+                                Log.d("item click on find",visit_user_id);
                                 startActivity(profileIntent);
                             }
                         });

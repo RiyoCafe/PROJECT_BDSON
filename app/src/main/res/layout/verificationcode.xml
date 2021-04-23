@@ -33,21 +33,21 @@
 
 
     <!--    <com.goodiebag.pinview.Pinview-->
-<!--        android:id="@+id/pinView"-->
-<!--        android:layout_width="263dp"-->
-<!--        android:layout_height="52dp"-->
-<!--        android:layout_marginTop="280dp"-->
-<!--        app:cursorVisible="false"-->
-<!--        app:forceKeyboard="true"-->
-<!--        app:hint="0"-->
-<!--        app:inputType="text"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:password="false"-->
-<!--        app:pinHeight="40dp"-->
-<!--        app:pinLength="6"-->
-<!--        app:pinWidth="40dp" />-->
+    <!--        android:id="@+id/pinView"-->
+    <!--        android:layout_width="263dp"-->
+    <!--        android:layout_height="52dp"-->
+    <!--        android:layout_marginTop="280dp"-->
+    <!--        app:cursorVisible="false"-->
+    <!--        app:forceKeyboard="true"-->
+    <!--        app:hint="0"-->
+    <!--        app:inputType="text"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:password="false"-->
+    <!--        app:pinHeight="40dp"-->
+    <!--        app:pinLength="6"-->
+    <!--        app:pinWidth="40dp" />-->
 
     <EditText
         android:id="@+id/pinInput"

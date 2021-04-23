@@ -65,7 +65,8 @@ public class Verification  extends AppCompatActivity {
                 if(task.isSuccessful())
                 {
                     load.setVisibility(View.GONE);
-                    Intent intent=new Intent(Verification.this,MainActivity.class);
+                    Intent intent=new Intent(Verification.this,ConfirmPassword.class);
+                    //intent.putExtra("num",)
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                 }else

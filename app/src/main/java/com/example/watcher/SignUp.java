@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +32,7 @@ import java.util.HashMap;
 public class SignUp extends AppCompatActivity {
 
     private EditText editText1,editText2,editText3,editText4,editText5;
+
     private Button button;
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
@@ -139,9 +143,7 @@ public class SignUp extends AppCompatActivity {
                                 String deviceToken = FirebaseInstanceId.getInstance().getToken();
 
                                 String currentUserID = mAuth.getCurrentUser().getUid();
-                                Intent intent  =new Intent();
-                                intent.putExtra("email",email);
-                                intent.putExtra("password",password);
+
                                 HashMap<String, Object> map = new HashMap<>();
                                 map.put("uid", currentUserID);
                                 map.put("username", username);
@@ -149,6 +151,15 @@ public class SignUp extends AppCompatActivity {
                                 map.put("email", email);
                                 map.put("phone", phone);
                                 map.put("device_token", deviceToken);
+
+                                SharedPreferences pref =getSharedPreferences("nameofemail", Context.MODE_PRIVATE); // 0 - for private mode
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString(email,username);
+
+                                Log.d("goes right?",email+","+username);
+
+                                //editor.putString(e);
+                                editor.commit();
                                 RootRef.child("Users").child(currentUserID).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {

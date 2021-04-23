@@ -22,7 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="user name"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="18sp"
@@ -36,7 +35,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="hey i'm using Coding Cafe chat App."
+
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="18sp"

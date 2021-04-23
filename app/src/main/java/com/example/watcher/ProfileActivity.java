@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
@@ -27,7 +30,7 @@ public class ProfileActivity extends AppCompatActivity {
     private CircleImageView circleImageView;
     private TextView textView1,textView2;
     private Button button1,button2;
-    private DatabaseReference UserRef, ChatRequestRef, ContactsRef, NotificationRef;
+    private DatabaseReference UserRef, ChatRequestRef, ContactsRef, NotificationRef,typeRef;
     private FirebaseAuth mAuth;
     private String receiverUserID,senderUserID,Current_State;
 
@@ -40,13 +43,21 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         UserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         ChatRequestRef = FirebaseDatabase.getInstance().getReference().child("Chat Requests");
+        typeRef= FirebaseDatabase.getInstance().getReference().child("User Type");
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
-       // NotificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
+        // NotificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
         receiverUserID = getIntent().getExtras().get("visit_user_id").toString();
+        Log.d("whose end",receiverUserID);
         senderUserID = mAuth.getCurrentUser().getUid();
         Current_State = "new";
         RetrieveUserInfo();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        RetrieveUserInfo();
     }
 
     private void RetrieveUserInfo()
@@ -57,24 +68,26 @@ public class ProfileActivity extends AppCompatActivity {
             {
                 if ((dataSnapshot.exists())  &&  (dataSnapshot.hasChild("image")))
                 {
-                    //String userImage = dataSnapshot.child("image").getValue().toString();
+                    String userImage = dataSnapshot.child("image").getValue().toString();
                     String userName = dataSnapshot.child("username").getValue().toString();
                     //String userstatus = dataSnapshot.child("status").getValue().toString();
 
-                    Picasso.get().load(R.drawable.profile_user).placeholder(R.drawable.profile_user).into(circleImageView);
+                    Picasso.get().load(userImage).placeholder(R.drawable.profile_user).into(circleImageView);
                     textView1.setText(userName);
-                    textView2.setText("habijabi");
+                    //userProfileStatus.setText(userstatus);
 
 
                     ManageChatRequests();
                 }
                 else
                 {
-                    String userName = dataSnapshot.child("username").getValue().toString();
-                    //String userstatus = dataSnapshot.child("status").getValue().toString();
+                    if(dataSnapshot.child("username").getValue().toString()!=null) {
+                        String userName = dataSnapshot.child("username").getValue().toString();
+                        //String userstatus = dataSnapshot.child("status").getValue().toString();
 
-                    textView1.setText(userName);
-                    textView2.setText("habijabi");
+                        textView1.setText(userName);
+                        //userProfileStatus.setText(userstatus);}
+                    }
 
 
                     ManageChatRequests();
@@ -113,7 +126,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 Current_State = "request_received";
                                 button1.setText("Accept Chat Request");
 
-                               button2.setVisibility(View.VISIBLE);
+                                button2.setVisibility(View.VISIBLE);
                                 button2.setEnabled(true);
 
                                 button2.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void RemoveSpecificContact()
     {
+
         ContactsRef.child(senderUserID).child(receiverUserID)
                 .removeValue()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -220,12 +234,64 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+
+        typeRef.child(senderUserID).child(receiverUserID)
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task)
+                    {
+                        if (task.isSuccessful())
+                        {
+                            typeRef.child(receiverUserID).child(senderUserID)
+                                    .removeValue()
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task)
+                                        {
+                                            if (task.isSuccessful())
+                                            {
+                                                Log.d("is removed","success");
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
 
 
 
     private void AcceptChatRequest()
     {
+        typeRef.child(senderUserID).child(receiverUserID).child("Type").setValue("Caree");
+        typeRef.child(receiverUserID).child(senderUserID).child("Type").setValue("Saver");
+
+        FirebaseMessaging.getInstance().subscribeToTopic(receiverUserID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg ="task is successful";
+                        if (!task.isSuccessful()) {
+                            msg = "task is not successfuol";
+                        }
+                        Log.d("weather topic", msg);
+                        Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+        FirebaseMessaging.getInstance().subscribeToTopic(receiverUserID)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "u are in danger";
+                        if (!task.isSuccessful()) {
+                            msg = "u are failed";
+                        }
+                        Log.d("accept chat request", msg);
+                        Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
         ContactsRef.child(senderUserID).child(receiverUserID)
                 .child("Contacts").setValue("Saved")
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -280,6 +346,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void CancelChatRequest()
     {
+
         ChatRequestRef.child(senderUserID).child(receiverUserID)
                 .removeValue()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -296,7 +363,7 @@ public class ProfileActivity extends AppCompatActivity {
                                         {
                                             if (task.isSuccessful())
                                             {
-                                               button1.setEnabled(true);
+                                                button1.setEnabled(true);
                                                 Current_State = "new";
                                                 button1.setText("Send Friend Request");
 
@@ -315,6 +382,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void SendChatRequest()
     {
+
         HashMap<String, Object> map = new HashMap<>();
         map.put("request_type", "sent");
         map.put("type", "caree");

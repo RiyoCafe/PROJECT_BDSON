@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -40,7 +42,7 @@ public class RequestFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private View requestView;
-    private DatabaseReference ChatRequestsRef, UsersRef, ContactsRef;
+    private DatabaseReference ChatRequestsRef, UsersRef, ContactsRef,typeRef;
     private FirebaseAuth mAuth;
     private String currentUserID;
     public RequestFragment() {
@@ -62,13 +64,14 @@ public class RequestFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         currentUserID = mAuth.getCurrentUser().getUid();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        typeRef = FirebaseDatabase.getInstance().getReference().child("User Type");
         ChatRequestsRef = FirebaseDatabase.getInstance().getReference().child("Chat Requests");
         ContactsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
 
         recyclerView= requestView.findViewById(R.id.request_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-       return requestView;
+        return requestView;
     }
 
     @Override
@@ -115,7 +118,7 @@ public class RequestFragment extends Fragment {
                                                 }
 
                                                 final String requestUserName = dataSnapshot.child("username").getValue().toString();
-                                               // final String requestUserStatus = dataSnapshot.child("status").getValue().toString();
+                                                // final String requestUserStatus = dataSnapshot.child("status").getValue().toString();
 
                                                 holder.userName.setText(requestUserName);
                                                 holder.userStatus.setText("wants to connect with you.");
@@ -125,6 +128,22 @@ public class RequestFragment extends Fragment {
                                                     @Override
                                                     public void onClick(View view)
                                                     {
+                                                        FirebaseMessaging.getInstance().subscribeToTopic(list_user_id)
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        String msg ="task is successful";
+                                                                        if (!task.isSuccessful()) {
+                                                                            msg = "task is not successfuol";
+                                                                        }
+                                                                        Log.d("weather topic", msg);
+                                                                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+
+                                                        Log.d("type of user",currentUserID+","+list_user_id);
+                                                        typeRef.child(currentUserID).child(list_user_id).child("Type").setValue("Caree");
+                                                        typeRef.child(list_user_id).child(currentUserID).child("Type").setValue("Saver");
                                                         ContactsRef.child(currentUserID).child(list_user_id).child("Contact")
                                                                 .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
                                                             @Override
@@ -174,6 +193,7 @@ public class RequestFragment extends Fragment {
                                                 holder.CancelButton.setOnClickListener(new View.OnClickListener() {
                                                     @Override
                                                     public void onClick(View v) {
+
                                                         ChatRequestsRef.child(currentUserID).child(list_user_id)
                                                                 .removeValue()
                                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -213,7 +233,9 @@ public class RequestFragment extends Fragment {
                                         Button request_sent_btn = holder.itemView.findViewById(R.id.request_accept_btn);
                                         request_sent_btn.setText("Req Sent");
 
+
                                         holder.itemView.findViewById(R.id.request_cancel_btn).setVisibility(View.INVISIBLE);
+
 
                                         UsersRef.child(list_user_id).addValueEventListener(new ValueEventListener() {
                                             @Override
