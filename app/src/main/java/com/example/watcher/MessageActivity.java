@@ -74,14 +74,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MessageActivity extends AppCompatActivity {
 
-    private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
+    private String messageReceiverID, messageSenderID,messageReceiverImage;
 
     private Button b;
     private static final int REQUEST_CODE_LOCATION_PERMISSION = 19;
     private final int STORAGE_PERMISSION_CODE = 1;private int i;
     private CircleImageView userImage;
     private FirebaseAuth mAuth;
-    private DatabaseReference RootRef,locationRef,notificationRef,ChatsRef;
+    private DatabaseReference RootRef,locationRef;
     private ImageButton SendMessageButton,sendLocation_button,showLocationButton;
     private EditText MessageInputText;
     private String saveCurrentTime, saveCurrentDate;
@@ -102,14 +102,12 @@ public class MessageActivity extends AppCompatActivity {
         messageSenderID = mAuth.getCurrentUser().getUid();
         RootRef = FirebaseDatabase.getInstance().getReference();
         locationRef = FirebaseDatabase.getInstance().getReference();
-        notificationRef= FirebaseDatabase.getInstance().getReference().child("Notifications");
-        ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(messageSenderID);
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
-        messageReceiverName = getIntent().getExtras().get("visit_user_name").toString();
         messageReceiverImage = getIntent().getExtras().get("visit_image").toString();
         check_url="https://us-central1-watcher24-7.cloudfunctions.net/notifier";
         IntializeControllers();
         //username=SignUp.notifier_name;
+        //Picasso.get().load(messageReceiverImage).placeholder(R.drawable.profile_user).into(userImage);
         //username=Prevalent.UserName;
         SendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,9 +239,10 @@ public class MessageActivity extends AppCompatActivity {
         MessageInputText = (EditText) findViewById(R.id.text_messages);
         b=findViewById(R.id.mssage_sos_button);
 
-        messageAdapter = new MessageAdapter(messagesList);
+
         userMessagesList = (RecyclerView) findViewById(R.id.message_recyclerview);
         linearLayoutManager = new LinearLayoutManager(this);
+        messageAdapter = new MessageAdapter(messagesList);
         userMessagesList.setLayoutManager(linearLayoutManager);
         userMessagesList.setAdapter(messageAdapter);
 
@@ -349,40 +348,28 @@ public class MessageActivity extends AppCompatActivity {
     {
         super.onStart();
 
-        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
-                .addChildEventListener(new ChildEventListener() {
+        RootRef.child("Messages").child(mAuth.getCurrentUser().getUid()).child(messageReceiverID)
+                .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s)
-                    {
-                        Messages messages = dataSnapshot.getValue(Messages.class);
-
-                        messagesList.add(messages);
-
-                        messageAdapter.notifyDataSetChanged();
-
-                        userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists())
+                        {
+                            messagesList.clear();
+                            for(DataSnapshot dataSnapshot : snapshot.getChildren())
+                            {
+                                messagesList.add(dataSnapshot.getValue(Messages.class));
+                            }
+                            messageAdapter.notifyDataSetChanged();
+                            userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
+                        }
                     }
 
                     @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError error) {
 
                     }
                 });
+
     }
 
 
@@ -424,7 +411,7 @@ public class MessageActivity extends AppCompatActivity {
                 {
                     if (task.isSuccessful())
                     {
-                        Toast.makeText(MessageActivity.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MessageActivity.this, "Message Sent Successfully...", Toast.LENGTH_SHORT).show();
                     }
                     else
                     {

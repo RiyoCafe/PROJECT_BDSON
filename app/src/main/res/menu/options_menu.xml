@@ -4,7 +4,7 @@
     <item
         android:title="Find Savers"
         android:id="@+id/find_friends_menu"
-        app:showAsAction="ifRoom">
+        app:showAsAction="never">
 
     </item>
 
@@ -13,7 +13,7 @@
     <item
         android:title="Setting"
         android:id="@+id/setting_menu"
-        app:showAsAction="ifRoom">
+        app:showAsAction="never">
 
     </item>
 
