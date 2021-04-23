@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,7 +28,7 @@ public class SplashScreen extends AppCompatActivity {
         toanim= AnimationUtils.loadAnimation(this,R.anim.top_animation);
         bottomanim=AnimationUtils.loadAnimation(this,R.anim.bottom_animation);
         imageView=findViewById(R.id.imageView4);
-        textView=findViewById(R.id.textView3);
+        textView=findViewById(R.id.textView_welcome);
         textView2=findViewById(R.id.loading_percentage);
         progressBar=findViewById(R.id.bar);
         imageView.setAnimation(toanim);
@@ -37,6 +39,7 @@ public class SplashScreen extends AppCompatActivity {
         ProgressbarAnimation anim=new ProgressbarAnimation(this,progressBar,textView2,0,100);
         anim.setDuration(4000);
         progressBar.setAnimation(anim);
+
 
     }
 }

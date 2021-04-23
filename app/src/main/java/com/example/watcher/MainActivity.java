@@ -8,13 +8,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private Button button1,button2;
     private CheckBox checkBox;
     private Switch aSwitch;
-    private TextView mforgetpass;
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -65,8 +65,9 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        mforgetpass.setOnClickListener(v -> {
-            resetPassword();
+        aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked)
+                resetPassword();
         });
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser != null)
         {
-            Intent intent=new Intent(MainActivity.this,HomePageActivity.class);
+            Intent intent=new Intent(MainActivity.this,FinalHomeActivity2.class);
             startActivity(intent);
         }
 
@@ -120,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         String password=editText2.getText().toString().trim();
         String email=editText1.getText().toString().trim();
         if(password.isEmpty()){
-            editText2.setError("Please enter password");
+            editText2.setError("Please enter  password");
             editText2.requestFocus();
             return;
         }
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (task.isSuccessful())
                                     {
                                         progressDialog.dismiss();
-                                        Intent intent=new Intent(MainActivity.this, HomePageActivity.class);
+                                        Intent intent=new Intent(MainActivity.this, FinalHomeActivity2.class);
                                         startActivity(intent);
                                         Toast.makeText(MainActivity.this,"You have successfully logged in",Toast.LENGTH_SHORT).show();
                                     }
@@ -183,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     private void findAllViewId() {
 
         editText1=findViewById(R.id.email_login);
@@ -190,8 +192,8 @@ public class MainActivity extends AppCompatActivity {
         imageView=findViewById(R.id.view_pass_login);
         button1=findViewById(R.id.login_btn);
         button2=findViewById(R.id.signup_login);
-        checkBox=findViewById(R.id.save_password);
-        mforgetpass=findViewById(R.id.forgetpasstv);
+        checkBox=findViewById(R.id.forget_password);
+        aSwitch=findViewById(R.id.remember_login);
         editText2.setTransformationMethod(PasswordTransformationMethod.getInstance());
     }
 }
