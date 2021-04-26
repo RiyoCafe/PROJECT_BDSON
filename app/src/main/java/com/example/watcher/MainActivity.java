@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private Button button1,button2;
     private CheckBox checkBox;
-    private Switch aSwitch;
+    private TextView textView;
     private ProgressDialog progressDialog;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
@@ -67,9 +68,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if(isChecked)
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 resetPassword();
+            }
         });
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetPassword() {
-        Intent intent=new Intent(MainActivity.this,ResetPasswordActivity.class);
+        Intent intent=new Intent(MainActivity.this,COnfigureUser.class);
         startActivity(intent);
     }
 
@@ -142,15 +145,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    SharedPreferences pref =getSharedPreferences("nameofemail", Context.MODE_PRIVATE);
-                    if (pref.contains(email)) {
-                        SharedPreferences pref2 =getSharedPreferences("nameofuser", Context.MODE_PRIVATE); // 0 - for private mode
-                        SharedPreferences.Editor editor2 = pref2.edit();
-                        editor2.putString("careename", pref.getString(email,"not found"));
-                        Log.d("login user? ", pref.getString(email,"not found"));
-                        //editor.putString(e);
-                        editor2.commit();
-                    }
 
 
                     if(checkBox.isChecked())
@@ -204,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
         button1=findViewById(R.id.login_btn);
         button2=findViewById(R.id.signup_login);
         checkBox=findViewById(R.id.forget_password);
-        aSwitch=findViewById(R.id.remember_login);
+        textView=findViewById(R.id.forget_pass_textview);
         editText2.setTransformationMethod(PasswordTransformationMethod.getInstance());
     }
 }

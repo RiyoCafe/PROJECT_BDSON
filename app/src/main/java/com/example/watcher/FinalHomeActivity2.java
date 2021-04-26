@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -56,7 +58,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class FinalHomeActivity2 extends AppCompatActivity {
@@ -72,6 +77,8 @@ public class FinalHomeActivity2 extends AppCompatActivity {
     private String username,check_url, messageSenderID,firebase_name;
     Toolbar toolbar;
     private FirebaseAuth mAuth;
+    public static String uname;
+    private boolean Flag=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +106,20 @@ public class FinalHomeActivity2 extends AppCompatActivity {
         viewPager.setAdapter(pageAdapter);
         RootRef = FirebaseDatabase.getInstance().getReference();
 
+        RootRef.child("Users").child(messageSenderID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    Log.d("real name",snapshot.child("username").getValue().toString());
+                    uname=snapshot.child("username").getValue().toString();
+                }
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
         //Log.d("after fire",firebase_name);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -126,10 +146,7 @@ public class FinalHomeActivity2 extends AppCompatActivity {
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences pref =getSharedPreferences("nameofuser", Context.MODE_PRIVATE);
-                if (pref.contains("careename")) {
-                    username=pref.getString("careename", "not found");
-                }
+
                 clickSOSbuttonFOrDanger();
             }
         });
@@ -176,23 +193,16 @@ public class FinalHomeActivity2 extends AppCompatActivity {
     }
 
     private void clickSOSbuttonFOrDanger() {
-        enableGps();
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(FinalHomeActivity2.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CODE_LOCATION_PERMISSION);
-
-        } else {
-            getCurrentLocation();
-        }
         JSONObject json_request1=new JSONObject();
         try {
 
 
-            json_request1.put("uid",messageSenderID);
-            json_request1.put("name",username);
-            Log.d("username found ?: ",username);
+            json_request1.put("topic",messageSenderID);
+            json_request1.put("title","Help "+uname+" immediately !!!");
+
+            json_request1.put("message","we are sending her current location as soon as possible");
+            Log.d("username found ?: ",uname);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -200,6 +210,17 @@ public class FinalHomeActivity2 extends AppCompatActivity {
             @Override
             public void onResponse(final JSONObject jsonObject) {
                 try {
+                    enableGps();
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(FinalHomeActivity2.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                REQUEST_CODE_LOCATION_PERMISSION);
+
+                    } else {
+                        //  Log.d("in sos button","is it clicked");
+                        getCurrentLocation();
+                    }
                     Log.d("helping mehrab",jsonObject.getString("status"));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -273,23 +294,32 @@ public class FinalHomeActivity2 extends AppCompatActivity {
                     int latestLocationIndex = locationResult.getLocations().size() - 1;
                     latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
                     longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+
+                    Log.d("final test","sending caree location");
+                    sendCareeLocation();
                     Map map=new HashMap();
                     map.put("latitude",latitude);
                     map.put("longitude",longitude);
 
-                    ChatsRef.child(messageSenderID).addValueEventListener(new ValueEventListener() {
+                    Flag=true;
+
+                    ChatsRef.child(messageSenderID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.exists()){
                                 for(DataSnapshot dataSnapshot:snapshot.getChildren()){
                                     String messageReceiverID=dataSnapshot.getKey();
+                                    Log.d("final test","database loop");
                                     RootRef.child("Location").child(messageSenderID).child(messageReceiverID).updateChildren(map).addOnCompleteListener(new OnCompleteListener() {
                                         @Override
                                         public void onComplete(@NonNull Task task) {
-                                            if(task.isSuccessful())
-                                                Log.d("location",latitude+","+longitude);
+                                            if(task.isSuccessful()) {
+                                                Log.d("location sent value", latitude + "," + longitude);
+                                                Toast.makeText(FinalHomeActivity2.this, "You sent your current location "+latitude + "," + longitude, Toast.LENGTH_LONG).show();
+                                            }
                                             else{
-                                                Log.d("location error",task.getException().toString());
+                                                Log.d("location eror",task.getException().toString());
+                                                Toast.makeText(FinalHomeActivity2.this, "Your location can not be sent", Toast.LENGTH_LONG).show();
                                             }
                                         }
                                     });
@@ -313,6 +343,52 @@ public class FinalHomeActivity2 extends AppCompatActivity {
         LocationServices.getFusedLocationProviderClient(FinalHomeActivity2.this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
+    private void  sendCareeLocation(){
 
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            Log.d("all locationfrom caree:",address+","+city+","+state+","+country+","+postalCode+","+knownName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject json_request1=new JSONObject();
+        try {
+
+            json_request1.put("topic",messageSenderID);
+            json_request1.put("title","Location of "+uname);
+
+            json_request1.put("message",latitude+","+longitude);
+            Log.d("final test",uname+" request build "+latitude+","+longitude+","+messageSenderID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest1=new JsonObjectRequest(Request.Method.POST, check_url, json_request1, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(final JSONObject jsonObject) {
+                try {
+                    Log.d("final test",jsonObject.getString("status"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.d("final test","yes or no?");
+            }
+        });
+        MySingelton.getInstance(FinalHomeActivity2.this).addToRequestQueue(jsonObjectRequest1);
+    }
 
 }

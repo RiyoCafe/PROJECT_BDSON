@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,8 +35,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
-import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
+
 
 import java.util.HashMap;
 
@@ -123,7 +123,8 @@ public class SettingActivity extends AppCompatActivity {
                                 Log.d("is setting",dataSnapshot.child("BloodGroup").getValue().toString());
                             }
                             if(dataSnapshot.hasChild("image")){
-                                Picasso.get().load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
+                                // Picasso.get().load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
+                                Glide.with(SettingActivity.this).load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
                             }
                         }
                     }

@@ -15,6 +15,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Looper;
@@ -57,17 +60,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.squareup.picasso.Picasso;
+
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -81,18 +85,18 @@ public class MessageActivity extends AppCompatActivity {
     private final int STORAGE_PERMISSION_CODE = 1;private int i;
     private CircleImageView userImage;
     private FirebaseAuth mAuth;
-    private DatabaseReference RootRef,locationRef;
+    private DatabaseReference RootRef,locationRef,ChatsRef;
     private ImageButton SendMessageButton,sendLocation_button,showLocationButton;
     private EditText MessageInputText;
     private String saveCurrentTime, saveCurrentDate;
     private final List<Messages> messagesList = new ArrayList<>();
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
-    private List<String> receiverList=new ArrayList<>();
     private RecyclerView userMessagesList;
     private double latitude,longitude;
     private double sendLatitude,sendLongitude;
     private String username,check_url;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +107,10 @@ public class MessageActivity extends AppCompatActivity {
         RootRef = FirebaseDatabase.getInstance().getReference();
         locationRef = FirebaseDatabase.getInstance().getReference();
         messageReceiverID = getIntent().getExtras().get("visit_user_id").toString();
+        Log.d("receiveridin message",messageReceiverID);
         messageReceiverImage = getIntent().getExtras().get("visit_image").toString();
         check_url="https://us-central1-watcher24-7.cloudfunctions.net/notifier";
+        ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts");
         IntializeControllers();
         //username=SignUp.notifier_name;
         //Picasso.get().load(messageReceiverImage).placeholder(R.drawable.profile_user).into(userImage);
@@ -139,7 +145,10 @@ public class MessageActivity extends AppCompatActivity {
                             REQUEST_CODE_LOCATION_PERMISSION);
 
                 } else {
-                    getCurrentLocation();
+                    // getCurrentDeviceLocation();
+                    getCurrentLocationduplicate();
+
+
                 }
             }
         });
@@ -179,25 +188,15 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void clickSOSbuttonFOrDanger() {
-        enableGps();
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
-                PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(MessageActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_CODE_LOCATION_PERMISSION);
-
-        } else {
-            getCurrentLocation();
-        }
         JSONObject json_request1=new JSONObject();
         try {
-            SharedPreferences pref =getSharedPreferences("nameofuser", Context.MODE_PRIVATE);
-            if (pref.contains("careename")) {
-                username=pref.getString("careename", "not found");
-            }
-            json_request1.put("uid",messageSenderID);
-            json_request1.put("name",username);
-            Log.d("username found ?: ",username);
+
+            json_request1.put("topic",messageSenderID);
+            json_request1.put("title","Help "+FinalHomeActivity2.uname+" immediately !!!");
+
+            json_request1.put("message","we are sending her current location as soon as possible");
+            Log.d("username found ?: ",FinalHomeActivity2.uname);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -205,9 +204,21 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onResponse(final JSONObject jsonObject) {
                 try {
+                    enableGps();
+                    if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
+                            PackageManager.PERMISSION_GRANTED) {
+
+                        ActivityCompat.requestPermissions(MessageActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                REQUEST_CODE_LOCATION_PERMISSION);
+
+                    } else {
+                        //  Log.d("in sos button","is it clicked");
+                        getCurrentLocation();
+                    }
                     Log.d("helping mehrab",jsonObject.getString("status"));
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Toast.makeText(MessageActivity.this,"is it catch whrer",Toast.LENGTH_LONG).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -217,6 +228,8 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
         MySingelton.getInstance(MessageActivity.this).addToRequestQueue(jsonObjectRequest1);
+
+
     }
 
 
@@ -225,13 +238,6 @@ public class MessageActivity extends AppCompatActivity {
 
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-/*
-
-        userName = (TextView) findViewById(R.id.custom_profile_name);
-        userLastSeen = (TextView) findViewById(R.id.custom_user_last_seen);
-        userImage = (CircleImageView) findViewById(R.id.custom_profile_image);
-        */
-
 
         SendMessageButton =  findViewById(R.id.send_messages);
         showLocationButton=findViewById(R.id.show_location_btn);
@@ -293,6 +299,95 @@ public class MessageActivity extends AppCompatActivity {
         }
     }
 
+    private void  sendCareeLocation(){
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            Log.d("all locationfrom caree:",address+","+city+","+state+","+country+","+postalCode+","+knownName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject json_request1=new JSONObject();
+        try {
+
+            json_request1.put("topic",messageSenderID);
+            json_request1.put("title","Location of "+FinalHomeActivity2.uname);
+
+            json_request1.put("message",latitude+","+longitude);
+            Log.d("username found ?: ",FinalHomeActivity2.uname);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest1=new JsonObjectRequest(Request.Method.POST, check_url, json_request1, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(final JSONObject jsonObject) {
+                try {
+                    Log.d("helping mehrab",jsonObject.getString("status"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.d("helping mehrab","yes or no?");
+            }
+        });
+        MySingelton.getInstance(MessageActivity.this).addToRequestQueue(jsonObjectRequest1);
+    }
+
+    private void getCurrentDeviceLocation(){
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        /**
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            // if (isPermissionGranted) {
+            Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+            locationResult.addOnCompleteListener(new OnCompleteListener<Location>() {
+                @Override
+                public void onComplete(@NonNull Task<Location> task) {
+                    if (task.isSuccessful()) {
+                        Log.d("Message Activity", "getDeviceLocation onComplete: location found");
+                        Location location = task.getResult();
+                        if (location == null) {
+                            Toast.makeText(getApplicationContext(), "location is null", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Toast.makeText(getApplicationContext(), "location found\"       "+location.getLatitude()+","+location.getLongitude(), Toast.LENGTH_SHORT).show();
+                        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                        //deviceLatLng = currentLocation;
+                        // if(onDeviceLatLngFoundListener!=null)
+                        // onDeviceLatLngFoundListener.onDeviceLatLngFound(currentLocation);
+                    }
+                    else {
+                        Log.d("Message Activity", "getDeviceLocation onComplete: location not found");
+                    }
+                }
+            });
+            //  }else {
+            //this.getLocationPermission();
+            // }
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
     @SuppressLint("MissingPermission")
     private void getCurrentLocation()
     {
@@ -315,20 +410,53 @@ public class MessageActivity extends AppCompatActivity {
                     int latestLocationIndex = locationResult.getLocations().size() - 1;
                     latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
                     longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+
+
+                    sendCareeLocation();
                     Map map=new HashMap();
                     map.put("latitude",latitude);
                     map.put("longitude",longitude);
-                    RootRef.child("Location").child(messageSenderID).child(messageReceiverID).updateChildren(map).addOnCompleteListener(new OnCompleteListener() {
+                   /* RootRef.child("Location").child(messageSenderID).child(messageReceiverID).updateChildren(map).addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
                             if(task.isSuccessful()) {
-                                Log.d("location", latitude + "," + longitude);
-                                Toast.makeText(MessageActivity.this, "You sent your current location", Toast.LENGTH_LONG).show();
+                                Log.d("location sent value", latitude + "," + longitude);
+                                Toast.makeText(MessageActivity.this, "You sent your current location "+latitude + "," + longitude, Toast.LENGTH_LONG).show();
                             }
                             else{
                                 Log.d("location eror",task.getException().toString());
                                 Toast.makeText(MessageActivity.this, "Your location can not be sent", Toast.LENGTH_LONG).show();
                             }
+                        }
+                    });*/
+
+                    ChatsRef.child(messageSenderID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists()){
+                                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                    String messageReceiverID=dataSnapshot.getKey();
+                                    Log.d("final test","database loop");
+                                    RootRef.child("Location").child(messageSenderID).child(messageReceiverID).updateChildren(map).addOnCompleteListener(new OnCompleteListener() {
+                                        @Override
+                                        public void onComplete(@NonNull Task task) {
+                                            if(task.isSuccessful()) {
+                                                Log.d("location sent value", latitude + "," + longitude);
+                                                Toast.makeText(MessageActivity.this, "You sent your current location "+latitude + "," + longitude, Toast.LENGTH_LONG).show();
+                                            }
+                                            else{
+                                                Log.d("location eror",task.getException().toString());
+                                                Toast.makeText(MessageActivity.this, "Your location can not be sent", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
 
@@ -340,6 +468,102 @@ public class MessageActivity extends AppCompatActivity {
         };
 
         LocationServices.getFusedLocationProviderClient(MessageActivity.this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+    @SuppressLint("MissingPermission")
+    private void getCurrentLocationduplicate()
+    {
+
+
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationCallback locationCallback = new LocationCallback() {
+
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                LocationServices.getFusedLocationProviderClient(MessageActivity.this)
+                        .removeLocationUpdates(this);
+
+                if (locationResult != null && locationResult.getLocations().size() > 0) {
+                    int latestLocationIndex = locationResult.getLocations().size() - 1;
+                    latitude = locationResult.getLocations().get(latestLocationIndex).getLatitude();
+                    longitude = locationResult.getLocations().get(latestLocationIndex).getLongitude();
+                    sendSenderLocation();
+                    Map map=new HashMap();
+                    map.put("latitude",latitude);
+                    map.put("longitude",longitude);
+                    RootRef.child("Location").child(messageSenderID).child(messageReceiverID).updateChildren(map).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if(task.isSuccessful()) {
+                                Log.d("location sent value", latitude + "," + longitude);
+                                Toast.makeText(MessageActivity.this, "You sent your current location "+latitude + "," + longitude, Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                Log.d("location eror",task.getException().toString());
+                                Toast.makeText(MessageActivity.this, "Your location can not be sent", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+                }
+
+            }
+
+        };
+
+        LocationServices.getFusedLocationProviderClient(MessageActivity.this).requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void sendSenderLocation() {
+
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            Log.d("all location :",address+","+city+","+state+","+country+","+postalCode+","+knownName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        JSONObject json_request1=new JSONObject();
+        try {
+
+            json_request1.put("topic",messageReceiverID+"_"+messageSenderID);
+            json_request1.put("title",FinalHomeActivity2.uname+"  sent her current location");
+
+            json_request1.put("message",latitude+","+longitude);
+            Log.d("username found ?: ",FinalHomeActivity2.uname);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest1=new JsonObjectRequest(Request.Method.POST, check_url, json_request1, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(final JSONObject jsonObject) {
+                try {
+                    Log.d("helping mehrab",jsonObject.getString("status"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.d("helping mehrab","yes or no?");
+            }
+        });
+        MySingelton.getInstance(MessageActivity.this).addToRequestQueue(jsonObjectRequest1);
     }
 
 

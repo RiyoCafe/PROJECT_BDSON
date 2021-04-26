@@ -39,6 +39,8 @@
                     android:layout_height="wrap_content"
 
                     android:textAlignment="textStart"
+                    android:textColor="#5a2f74"
+                    android:fontFamily="sans-serif-condensed"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -53,6 +55,8 @@
                 android:layout_margin="2dp"
 
                 android:textAlignment="textStart"
+                android:textColor="#5a2f74"
+                android:fontFamily="sans-serif-condensed"
                 android:textSize="16sp" />
 
 

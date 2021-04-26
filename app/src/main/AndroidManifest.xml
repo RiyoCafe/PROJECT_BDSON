@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Watcher">
-        <activity android:name=".ConfirmPassword"></activity>
+        <activity android:name=".COnfigureUser"></activity>
+        <activity android:name=".ConfirmPassword" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".LocationMapActivity" />
         <!--

@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,7 +73,8 @@ public class ProfileActivity extends AppCompatActivity {
                     String userName = dataSnapshot.child("username").getValue().toString();
                     //String userstatus = dataSnapshot.child("status").getValue().toString();
 
-                    Picasso.get().load(userImage).placeholder(R.drawable.profile_user).into(circleImageView);
+                    //Picasso.get().load(userImage).placeholder(R.drawable.profile_user).into(circleImageView);
+                    Glide.with(ProfileActivity.this).load(userImage).placeholder(R.drawable.profile_user).into(circleImageView);
                     textView1.setText(userName);
                     //userProfileStatus.setText(userstatus);
 
@@ -268,7 +270,7 @@ public class ProfileActivity extends AppCompatActivity {
         typeRef.child(senderUserID).child(receiverUserID).child("Type").setValue("Caree");
         typeRef.child(receiverUserID).child(senderUserID).child("Type").setValue("Saver");
 
-        FirebaseMessaging.getInstance().subscribeToTopic(receiverUserID)
+        FirebaseMessaging.getInstance().subscribeToTopic(senderUserID+"_"+receiverUserID)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -277,7 +279,7 @@ public class ProfileActivity extends AppCompatActivity {
                             msg = "task is not successfuol";
                         }
                         Log.d("weather topic", msg);
-                        Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
         FirebaseMessaging.getInstance().subscribeToTopic(receiverUserID)
@@ -289,7 +291,7 @@ public class ProfileActivity extends AppCompatActivity {
                             msg = "u are failed";
                         }
                         Log.d("accept chat request", msg);
-                        Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
                     }
                 });
         ContactsRef.child(senderUserID).child(receiverUserID)
@@ -427,6 +429,19 @@ public class ProfileActivity extends AppCompatActivity {
                                             }*/
                                             if (task.isSuccessful())
                                             {
+                                                Log.d("send request subscried","yes or no");
+                                                FirebaseMessaging.getInstance().subscribeToTopic(senderUserID+"_"+receiverUserID)
+                                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                String msg ="task is successful";
+                                                                if (!task.isSuccessful()) {
+                                                                    msg = "task is not successfuol";
+                                                                }
+                                                                Log.d("weather topic", msg);
+                                                                // Toast.makeText(ProfileActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
                                                 button1.setEnabled(true);
                                                 Current_State = "request_sent";
                                                 button1.setText("Cancel Chat Request");

@@ -20,6 +20,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +34,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -114,7 +114,8 @@ public class RequestFragment extends Fragment {
                                                 {
                                                     final String requestProfileImage = dataSnapshot.child("image").getValue().toString();
 
-                                                    Picasso.get().load(requestProfileImage).into(holder.profileImage);
+                                                    //Picasso.get().load(requestProfileImage).into(holder.profileImage);
+                                                    Glide.with(getActivity().getApplicationContext()).load(requestProfileImage).into(holder.profileImage);
                                                 }
 
                                                 final String requestUserName = dataSnapshot.child("username").getValue().toString();
@@ -140,6 +141,23 @@ public class RequestFragment extends Fragment {
                                                                         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                                                                     }
                                                                 });
+
+
+                                                        FirebaseMessaging.getInstance().subscribeToTopic(currentUserID+"_"+list_user_id)
+                                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                    @Override
+                                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                                        String msg ="task is successful";
+                                                                        if (!task.isSuccessful()) {
+                                                                            msg = "task is not successfuol";
+                                                                        }
+                                                                        Log.d("weather topic", msg);
+                                                                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+
+                                                        Log.d("topic id location",currentUserID+"_"+list_user_id);
+                                                        Log.d("topic id sos",list_user_id);
 
                                                         Log.d("type of user",currentUserID+","+list_user_id);
                                                         typeRef.child(currentUserID).child(list_user_id).child("Type").setValue("Caree");
@@ -245,7 +263,8 @@ public class RequestFragment extends Fragment {
                                                 {
                                                     final String requestProfileImage = dataSnapshot.child("image").getValue().toString();
 
-                                                    Picasso.get().load(requestProfileImage).into(holder.profileImage);
+                                                    //Picasso.get().load(requestProfileImage).into(holder.profileImage);
+                                                    Glide.with(getActivity().getApplicationContext()).load(requestProfileImage).into(holder.profileImage);
                                                 }
 
                                                 final String requestUserName = dataSnapshot.child("username").getValue().toString();

@@ -95,28 +95,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:fontFamily="sans-serif-black"
         android:text="Remember Me"
         android:textColor="#5a2f74"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/remember_login"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_login" />
-
-    <Switch
-        android:id="@+id/remember_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="26dp"
-        android:fontFamily="sans-serif-black"
-        android:text="Forget password?"
-        android:textColor="#5a2f74"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/forget_password"
         app:layout_constraintTop_toBottomOf="@+id/signup_login" />
 
     <ImageView
@@ -130,5 +113,18 @@
         app:layout_constraintTop_toTopOf="@+id/password_login"
         app:layout_constraintVertical_bias="0.434"
         app:srcCompat="@drawable/view" />
+
+    <TextView
+        android:id="@+id/forget_pass_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginTop="30dp"
+        android:fontFamily="sans-serif-black"
+        android:text="Forget password?"
+        android:textColor="#5a2f74"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

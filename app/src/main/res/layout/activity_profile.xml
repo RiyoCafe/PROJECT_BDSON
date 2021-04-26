@@ -25,6 +25,7 @@
         android:layout_marginTop="20dp"
         android:textAlignment="center"
         android:textAllCaps="false"
+        android:fontFamily="sans-serif-condensed"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,6 +42,7 @@
         android:textAllCaps="false"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:fontFamily="sans-serif-condensed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username_profile" />
@@ -66,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Cancel Chat Request"
+        android:fontFamily="sans-serif-condensed"
         android:textAllCaps="false"
         android:textColor="@android:color/background_light"
         android:textSize="20sp"

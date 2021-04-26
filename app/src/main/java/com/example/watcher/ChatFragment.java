@@ -23,10 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -96,9 +93,9 @@ public class ChatFragment extends Fragment {
                                     if (dataSnapshot.hasChild("image"))
                                     {
                                         retImage[0] = dataSnapshot.child("image").getValue().toString();
-                                        //Glide.with(getContext()).load(retImage[0]).into(holder.profileImage);
+                                        Glide.with(getActivity().getApplicationContext()).load(retImage[0]).into(holder.profileImage);
 
-                                        Picasso.get().load(retImage[0]).into(holder.profileImage);
+                                        // Picasso.get().load(retImage[0]).into(holder.profileImage);
                                     }
 
                                     final String retName = dataSnapshot.child("username").getValue().toString();

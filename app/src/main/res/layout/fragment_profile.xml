@@ -27,7 +27,7 @@
             android:layout_height="200dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:src="@drawable/bg" />
+            android:src="@drawable/profile_user" />
 
         <TextView
             android:id="@+id/username_profile_fragment"

@@ -17,11 +17,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.squareup.picasso.Picasso;
+
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -75,7 +76,8 @@ public class FindFriendsActivity extends AppCompatActivity {
                     {
                         holder.userName.setText(model.getusername());
                         //holder.userStatus.setText(model.getType());
-                        Picasso.get().load(model.getImage()).placeholder(R.drawable.profile_user).into(holder.profileImage);
+                        // Picasso.get().load(model.getImage()).placeholder(R.drawable.profile_user).into(holder.profileImage);
+                        Glide.with(FindFriendsActivity.this).load(model.getImage()).placeholder(R.drawable.profile_user).into(holder.profileImage);
 
 
                         holder.itemView.setOnClickListener(new View.OnClickListener() {

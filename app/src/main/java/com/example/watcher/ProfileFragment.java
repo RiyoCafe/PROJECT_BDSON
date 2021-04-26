@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -113,7 +114,8 @@ public class ProfileFragment extends Fragment {
                                 //Log.d("is setting",dataSnapshot.child("BloodGroup").getValue().toString());
                             }
                             if(dataSnapshot.hasChild("image")){
-                                Picasso.get().load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
+                                // Picasso.get().load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
+                                Glide.with(getActivity().getApplicationContext()).load(dataSnapshot.child("image").getValue().toString()).into(circleImageView);
                                 Log.d("image came?",dataSnapshot.child("image").getValue().toString());
                             }
                         }
