@@ -16,6 +16,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,6 +32,7 @@ public class COnfigureUser extends AppCompatActivity {
     private DatabaseReference ref;
     private String key;
     private boolean isFound=false;
+    private FirebaseAuth mAuth;
     ProgressDialog dialog;
 
     @Override
@@ -36,9 +40,11 @@ public class COnfigureUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_c_onfigure_user);
         Window window = this.getWindow();
+
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(ContextCompat.getColor(this,R.color.bar_color));
+        mAuth=FirebaseAuth.getInstance();
         button=findViewById(R.id.verify_btn_configure_user);
         dialog=new ProgressDialog(this);
         editText=findViewById(R.id.email_configure_user);
@@ -66,7 +72,7 @@ public class COnfigureUser extends AppCompatActivity {
             dialog.setMessage("Please wait, while we wre verifying your password");
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();*/
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            /*ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
@@ -94,6 +100,22 @@ public class COnfigureUser extends AppCompatActivity {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
+                }
+            });*/
+
+            mAuth.sendPasswordResetEmail(input).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                   if(task.isSuccessful()){
+
+                       Toast.makeText(COnfigureUser.this,"Please check your email if you want to reset your password",Toast.LENGTH_LONG).show();
+                       Intent intent=new Intent(COnfigureUser.this,MainActivity.class);
+                       startActivity(intent);
+                   }
+                   else{
+                       Toast.makeText(COnfigureUser.this,task.getException().toString(),Toast.LENGTH_LONG).show();
+
+                   }
                 }
             });
         }

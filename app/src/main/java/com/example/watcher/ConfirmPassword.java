@@ -38,8 +38,8 @@ public class ConfirmPassword extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(ContextCompat.getColor(this,R.color.bar_color));
         findAllViewId();
-        uid=getIntent().getExtras().getString("uid");
-        ref=FirebaseDatabase.getInstance().getReference().child("Users");
+       // uid=getIntent().getExtras().getString("uid");
+        //ref=FirebaseDatabase.getInstance().getReference().child("Users");
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
