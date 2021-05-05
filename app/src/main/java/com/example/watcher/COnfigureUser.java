@@ -4,9 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -52,7 +55,12 @@ public class COnfigureUser extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                verifyUser();
+
+//                Intent intent=new Intent(COnfigureUser.this,popUpActivity.class);
+//                startActivity(intent);
+//                finish();
+//                verifyUser();
+                showCustomDialog();
 
             }
         });
@@ -109,6 +117,7 @@ public class COnfigureUser extends AppCompatActivity {
                    if(task.isSuccessful()){
 
                        Toast.makeText(COnfigureUser.this,"Please check your email if you want to reset your password",Toast.LENGTH_LONG).show();
+
                        Intent intent=new Intent(COnfigureUser.this,MainActivity.class);
                        startActivity(intent);
                    }
@@ -121,4 +130,25 @@ public class COnfigureUser extends AppCompatActivity {
         }
 
     }
+    private void showCustomDialog() {
+        AlertDialog.Builder builder=new AlertDialog.Builder(COnfigureUser.this);
+        Log.d("inside", "showCustomDialog: ");
+        builder.setMessage("We will mail you a link.Please press Ok and Click On that link to reset your password.")
+                .setCancelable(false)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        verifyUser();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                });
+        builder.show();
+    }
+
 }
