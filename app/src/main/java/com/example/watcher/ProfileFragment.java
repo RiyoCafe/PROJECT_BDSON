@@ -3,6 +3,7 @@ package com.example.watcher;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -30,6 +31,7 @@ public class ProfileFragment extends Fragment {
     private View view;
     private Button button;
     FirebaseAuth mAuth;
+    private Button startButton;
     private CircleImageView circleImageView;
     private TextView textView1,textView2,textView3,textView4,textView5;
     private DatabaseReference RootRef;
@@ -65,6 +67,7 @@ public class ProfileFragment extends Fragment {
         textView3=view.findViewById(R.id.phone_profile_fragment);
         textView4=view.findViewById(R.id.address_profile_fragment);
         textView5=view.findViewById(R.id.blood_group_profile_fragment);
+        startButton=view.findViewById(R.id.startBackgroundService);
 
         retrieveUserInfo();
 
@@ -77,7 +80,35 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String str=startButton.getText().toString();
+                if(str.equalsIgnoreCase("start"))
+                {
+                    startButton.setText("Stop");
+                    startEmergencyService();
+                }else
+                {
+                    startButton.setText("Start");
+                    stopEmergencyService();
+                }
+
+
+            }
+        });
         return view;
+    }
+    private void stopEmergencyService() {
+        Intent intent = new Intent(getContext(), LockScreenService.class);
+        getActivity().
+        stopService(intent);
+    }
+
+    private void startEmergencyService(){
+        Intent intent = new Intent(getContext(), LockScreenService.class);
+        ContextCompat.startForegroundService(getContext(), intent);
     }
 
     private void retrieveUserInfo() {

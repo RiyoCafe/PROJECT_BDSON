@@ -199,6 +199,7 @@ public class FinalHomeActivity2 extends AppCompatActivity {
 
 
             json_request1.put("topic",messageSenderID);
+            Log.d("messageId", messageSenderID);
             json_request1.put("title","Help "+uname+" immediately !!!");
 
             json_request1.put("message","we are sending her current location as soon as possible");
@@ -206,6 +207,7 @@ public class FinalHomeActivity2 extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.d("jsonrequest", json_request1.toString());
         JsonObjectRequest jsonObjectRequest1=new JsonObjectRequest(Request.Method.POST, check_url, json_request1, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(final JSONObject jsonObject) {

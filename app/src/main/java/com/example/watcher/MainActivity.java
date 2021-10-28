@@ -3,10 +3,13 @@ package com.example.watcher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -34,6 +37,7 @@ import io.paperdb.Paper;
 
 public class MainActivity extends AppCompatActivity {
     //AIzaSyD5T6g8CGfcnTE01eX4gm5KCm-B5yMLhLY
+    public static final String NOTIFICATION_CHANNEL_ID = "TEST_CHANNEL";
     private EditText editText1,editText2;
     private ImageView imageView;
     private Button button1,button2;
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        createNotificationChannel();
         mAuth=FirebaseAuth.getInstance();
         currentUser=mAuth.getCurrentUser();
         progressDialog=new ProgressDialog(this);
@@ -121,6 +126,19 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    private void createNotificationChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel notificationChannel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    "Our test channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+
+            NotificationManager manager = super.getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(notificationChannel);
+        }
+    }
+
 
     private void loginApp() {
         String password=editText2.getText().toString().trim();
